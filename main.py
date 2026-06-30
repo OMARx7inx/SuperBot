@@ -32,8 +32,12 @@ async def load_extensions():
 async def main():
     async with bot:
         await load_extensions()
-        await bot.start('MTM5NDc5NTc3NTc0NTMzMTIwMA.GDFrEp.wxXmAefrS85Rms5EdziOpkGCLbdIaoLxjNcs7s')
+        # هنا البوت هيقرأ التوكن من إعدادات رندر المخفية بأمان
+        token = os.getenv('DISCORD_TOKEN')
+        if not token:
+            print("خطأ: لم يتم العثور على التوكن في إعدادات السيرفر!")
+            return
+        await bot.start(token)
 
 if __name__ == "__main__":
     asyncio.run(main())
-
