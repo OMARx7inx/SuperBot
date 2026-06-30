@@ -1,6 +1,8 @@
 import os
 import sys
 import asyncio
+from threading import Thread
+from flask import Flask
 
 try:
     import discord
@@ -9,6 +11,15 @@ except ImportError:
     import discord
 
 from discord.ext import commands
+
+# سيرفر وهمي عشان خطة Render المجانية
+app = Flask('')
+@app.route('/')
+def home():
+    return "Bot is alive!"
+
+def run_flask():
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix="!", intents=intents)
@@ -32,12 +43,13 @@ async def load_extensions():
 async def main():
     async with bot:
         await load_extensions()
-        # هنا البوت هيقرأ التوكن من إعدادات رندر المخفية بأمان
         token = os.getenv('DISCORD_TOKEN')
         if not token:
-            print("خطأ: لم يتم العثور على التوكن في إعدادات السيرفر!")
+            print("خطأ: لم يتم العثور على التوكن!")
             return
         await bot.start(token)
 
 if __name__ == "__main__":
+    # تشغيل السيرفر الوهمي في خلفية الكود
+    Thread(target=run_flask).start()
     asyncio.run(main())
